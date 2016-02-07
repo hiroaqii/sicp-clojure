@@ -3,9 +3,8 @@
 
 (defn hoge [x y z]
   (let [lst (take-last 2 (sort [x y z]))
-        a (first lst)
-        b (last  lst)]
-    (+ (* a a) (* b b))))
+        square (fn [n] (* n n))]
+    (+ (-> lst first square) (-> lst last square))))
 
 (deftest f
   (is (= 13 (hoge 1 2 3)))
