@@ -3,22 +3,12 @@
 
 (defn fast-expt-iter [a b n]
   (cond
-    (= 1 n) a
-    (even? n) (fast-expt-iter
-               (Math/pow (if (= a 1) b a) 2)
-               b
-               (/ n 2))
-    :else     (fast-expt-iter
-               (* (Math/pow a 2) b)
-               b
-               (/ (dec n) 2))))
+    (zero? n) a
+    (even? n) (fast-expt-iter a (* b b) (/ n 2))
+    :else     (fast-expt-iter (* a b) b (dec n))))
 
 (defn fast-expt [b n]
-  (cond
-    (= 1 n)   b
-    (even? n) (int (fast-expt-iter 1 b n))
-    :else     (int (* b (fast-expt-iter 1 b (dec n))))))
-
+  (fast-expt-iter 1 b n))
 
 (deftest t
   (is 2     (fast-expt 2 1))
