@@ -50,7 +50,7 @@
   (fib-iter 1 0 n))
 
 (fib2 10)
-
+;; 55
 
 ;; Clojureぽい書き方
 (defn fib3 [n]
@@ -60,6 +60,8 @@
     (nth col n)))
 
 (fib3 10)
+;; 55
+
 
 ;;両替パターンの計算
 
@@ -85,7 +87,7 @@
 ;; 292
 
 (comment
-  ;;(count-change 10) の
+  ;;(count-change 10) の再帰プロセスの置換モデル
   (cc 10 5)
   (+ (cc 10 4)(cc -40 5))
   (+ (cc 10 3)(cc -15 4)(cc -40 5))
@@ -119,7 +121,7 @@
   (+ 0 0 0 0 0 0 0 0 0 1 0 0 0 (cc 2 1)(cc 0 2)(cc 0 3)(cc -15 4)(cc -40 5))
   (+ 0 0 0 0 0 0 0 0 0 1 0 0 0 (cc 2 0)(cc 1 1)(cc 0 2)(cc 0 3)(cc -15 4)(cc -40 5))
   (+ 0 0 0 0 0 0 0 0 0 1 0 0 0 0 (cc 1 1)(cc 0 2)(cc 0 3)(cc -15 4)(cc -40 5))
-  (+ 0 0 0 0 0 0 0 0 0 1 0 0 0 0 (cc 1 0)(cc 0  1)(cc 0 2)(cc 0 3)(cc -15 4)(cc -40 5))
+  (+ 0 0 0 0 0 0 0 0 0 1 0 0 0 0 (cc 1 0)(cc 0 1)(cc 0 2)(cc 0 3)(cc -15 4)(cc -40 5))
   (+ 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 (cc 0 1)(cc 0 2)(cc 0 3)(cc -15 4)(cc -40 5))
   (+ 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 (cc 0 2)(cc 0 3)(cc -15 4)(cc -40 5))
   (+ 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 1 (cc 0 3)(cc -15 4)(cc -40 5))
@@ -127,4 +129,41 @@
   (+ 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 1 1 0 (cc -40 5))
   (+ 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 1 1 0 0)
   4
+  )
+
+;;; 1.2.4 指数計算
+
+;; 線形再帰プロセス
+(defn expt1 [b n]
+  (if (zero? n)
+    1
+    (* b (expt1 b (dec n)))))
+
+;; 線形反復プロセス
+(defn expt-iter [b cnt product]
+  (if (zero? cnt)
+    product
+    (expt-iter b (dec cnt) (* b product))))
+(defn expt2 [b n]
+  (expt-iter b n 1))
+
+(defn fast-expt [b n]
+  (cond
+    (zero? n) 1
+    (even? n) (int (Math/pow (fast-expt b (/ n 2)) 2))
+    :else (* b (fast-expt b (dec n)))))
+
+(comment
+  ;;(fast-expt 2 10) の再帰プロセスの置換モデル
+  (Math/pow (fast-expt 2 5) 2)
+  (Math/pow (* 2 (fast-expt 2 4)) 2)
+  (Math/pow (* 2 (Math/pow (fast-expt 2 2) 2)) 2)
+  (Math/pow (* 2 (Math/pow (Math/pow (fast-expt 2 1) 2) 2)) 2)
+  (Math/pow (* 2 (Math/pow (Math/pow (* 2 (fast-expt 2 0)) 2) 2)) 2)
+  (Math/pow (* 2 (Math/pow (Math/pow (* 2 1) 2) 2))2)
+  (Math/pow (* 2 (Math/pow (Math/pow 2 2)2))2)
+  (Math/pow (* 2 (Math/pow 4 2)) 2)
+  (Math/pow (* 2 16) 2)
+  (Math/pow 32 2)
+  1024
   )
