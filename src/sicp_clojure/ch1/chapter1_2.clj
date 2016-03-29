@@ -167,3 +167,11 @@
   (Math/pow 32 2)
   1024
   )
+
+
+;;; 1.2.5 最大公約数
+
+(defn gcd [a b]
+  (if (zero? b)
+    a
+    (gcd b (rem a b))))
