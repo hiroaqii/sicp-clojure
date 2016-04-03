@@ -175,3 +175,42 @@
   (if (zero? b)
     a
     (gcd b (rem a b))))
+
+
+;;; 1.2.6 素数判定
+
+;; 約数を探す
+(defn divides? [a b]
+  (zero? (rem b a)))
+
+(defn find-divisor [n test-divisor]
+  (cond
+    (> (Math/pow test-divisor 2) n) n
+    (divides? test-divisor n) test-divisor
+    :else (recur n (inc test-divisor))))
+
+(defn smallest-divisor [n]
+  (find-divisor n 2))
+
+(defn prime? [n]
+  (= n (smallest-divisor n)))
+
+;; フェルマーテスト
+(defn expmod [base exp m]
+  (cond
+    (zero? exp) 1
+    (even? exp) (-> (expmod base (/ exp 2) m) (Math/pow 2) (int) (rem m))
+    :else       (-> (expmod base (dec exp) m) (* base) (rem m))))
+
+(defn try-it [a n]
+  (= (expmod a n n) a))
+
+(defn fermat-test [n]
+  (let [a (-> (dec n) (rand-int) (inc))]
+    (= (expmod a n n) a)))
+
+(defn fast-prime? [n times]
+  (cond
+    (zero? times) true
+    (fermat-test n) (fast-prime? n (dec times))
+    :else false))
